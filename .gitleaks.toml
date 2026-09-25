@@ -1,0 +1,11 @@
+title = "AutoSpec API Gitleaks configuration"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Generated output and build artifacts"
+paths = [
+  '''target/''',
+  '''.mvn/''',
+]
