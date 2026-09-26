@@ -4,6 +4,9 @@ import br.com.fiap.autospec_api.exception.RecursoNaoEncontradoException;
 import br.com.fiap.autospec_api.model.Veiculo;
 import br.com.fiap.autospec_api.repository.VeiculoRepository;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -11,6 +14,7 @@ import java.util.List;
 public class VeiculoService {
 
     private final VeiculoRepository repository;
+    private static final Logger logger = LoggerFactory.getLogger(VeiculoService.class);
 
     public VeiculoService(VeiculoRepository repository) {
         this.repository = repository;
@@ -56,6 +60,13 @@ public class VeiculoService {
     public void excluir(Long id) {
 
         Veiculo veiculo = buscarPorId(id);
+
+        String actor = SecurityContextHolder.getContext().getAuthentication() != null
+            ? SecurityContextHolder.getContext().getAuthentication().getName()
+            : "system";
+
+        logger.warn("event=delete_vehicle vehicleId={} marca={} modelo={} actor={}",
+            veiculo.getId(), veiculo.getMarca(), veiculo.getModelo(), actor);
 
         repository.delete(veiculo);
     }

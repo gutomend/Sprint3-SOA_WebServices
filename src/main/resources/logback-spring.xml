@@ -1,0 +1,17 @@
+<configuration>
+
+    <springProperty scope="context" name="serviceName" source="spring.application.name" defaultValue="autospec-api" />
+
+    <appender name="STDOUT_JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"service":"${serviceName}","env":"${spring.profiles.active:-local}"}</customFields>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT_JSON" />
+    </root>
+
+    <logger name="org.springframework" level="WARN" />
+
+</configuration>
