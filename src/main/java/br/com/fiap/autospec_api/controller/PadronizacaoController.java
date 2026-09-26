@@ -5,6 +5,8 @@ import br.com.fiap.autospec_api.dto.PadronizacaoSaidaDTO;
 import br.com.fiap.autospec_api.service.PadronizacaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,8 +21,9 @@ public class PadronizacaoController {
 
     @Operation(summary = "Padronizar atributo técnico")
     @PostMapping
-    public PadronizacaoSaidaDTO padronizar(
-            @RequestBody @Valid PadronizacaoEntradaDTO dto) {
+        @PreAuthorize("hasAnyRole('ADMIN','ANALISTA','ADMINISTRADOR','BRIGADISTA','GESTOR')")
+        public PadronizacaoSaidaDTO padronizar(
+            @RequestBody @NotNull @Valid PadronizacaoEntradaDTO dto) {
 
         String resultado =
                 service.padronizar(dto.getAtributo());

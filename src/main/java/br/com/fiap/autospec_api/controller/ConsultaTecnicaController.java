@@ -4,6 +4,7 @@ import br.com.fiap.autospec_api.dto.VeiculoRespostaDTO;
 import br.com.fiap.autospec_api.service.ConsultaTecnicaService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/consulta-tecnica")
@@ -18,8 +19,9 @@ public class ConsultaTecnicaController {
     }
 
     @Operation(summary = "Consultar especificações técnicas padronizadas")
-    @GetMapping("/{marca}/{modelo}/{versao}")
-    public VeiculoRespostaDTO consultar(
+        @GetMapping("/{marca}/{modelo}/{versao}")
+        @PreAuthorize("hasAnyRole('ADMIN','ANALISTA','ADMINISTRADOR','BRIGADISTA','GESTOR')")
+        public VeiculoRespostaDTO consultar(
             @PathVariable String marca,
             @PathVariable String modelo,
             @PathVariable String versao) {

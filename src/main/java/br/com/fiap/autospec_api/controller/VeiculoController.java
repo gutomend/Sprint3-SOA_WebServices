@@ -7,6 +7,8 @@ import br.com.fiap.autospec_api.model.Veiculo;
 import br.com.fiap.autospec_api.service.VeiculoService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +33,10 @@ public class VeiculoController {
     }
 
     @Operation(summary = "Cadastrar veículo com especificações")
-    @PostMapping
-    public ResponseEntity<Veiculo> criar(
-            @RequestBody @Valid VeiculoDTO dto) {
+        @PostMapping
+        @PreAuthorize("hasAnyRole('ADMIN','ADMINISTRADOR','GESTOR')")
+        public ResponseEntity<Veiculo> criar(
+            @RequestBody @NotNull @Valid VeiculoDTO dto) {
 
         Veiculo veiculo = converterVeiculo(dto);
 
@@ -46,6 +49,7 @@ public class VeiculoController {
 
     @Operation(summary = "Listar todos os veículos")
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ANALISTA','ADMINISTRADOR','BRIGADISTA','GESTOR')")
     public ResponseEntity<List<Veiculo>> listarTodos() {
 
         return ResponseEntity.ok(
@@ -55,7 +59,8 @@ public class VeiculoController {
 
     @Operation(summary = "Buscar veículo por ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Veiculo> buscarPorId(
+        @PreAuthorize("hasAnyRole('ADMIN','ANALISTA','ADMINISTRADOR','BRIGADISTA','GESTOR')")
+        public ResponseEntity<Veiculo> buscarPorId(
             @PathVariable Long id) {
 
         return ResponseEntity.ok(
@@ -65,9 +70,10 @@ public class VeiculoController {
 
     @Operation(summary = "Atualizar veículo")
     @PutMapping("/{id}")
-    public ResponseEntity<Veiculo> atualizar(
+        @PreAuthorize("hasAnyRole('ADMIN','ADMINISTRADOR','GESTOR')")
+        public ResponseEntity<Veiculo> atualizar(
             @PathVariable Long id,
-            @RequestBody @Valid VeiculoDTO dto) {
+            @RequestBody @NotNull @Valid VeiculoDTO dto) {
 
         Veiculo veiculo = converterVeiculo(dto);
 
@@ -78,7 +84,8 @@ public class VeiculoController {
 
     @Operation(summary = "Excluir veículo")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(
+        @PreAuthorize("hasAnyRole('ADMIN','ADMINISTRADOR')")
+        public ResponseEntity<Void> excluir(
             @PathVariable Long id) {
 
         service.excluir(id);

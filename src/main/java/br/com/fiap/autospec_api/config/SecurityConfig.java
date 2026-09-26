@@ -1,9 +1,11 @@
 package br.com.fiap.autospec_api.config;
 
 import br.com.fiap.autospec_api.security.JwtAuthenticationFilter;
+import br.com.fiap.autospec_api.security.RateLimitingFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,16 +15,19 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final RateLimitingFilter rateLimitingFilter;
 
-    public SecurityConfig(
-            JwtAuthenticationFilter jwtAuthenticationFilter) {
+        public SecurityConfig(
+                        JwtAuthenticationFilter jwtAuthenticationFilter,
+                        RateLimitingFilter rateLimitingFilter) {
 
-        this.jwtAuthenticationFilter =
-                jwtAuthenticationFilter;
-    }
+                this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+                this.rateLimitingFilter = rateLimitingFilter;
+        }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -149,6 +154,10 @@ public class SecurityConfig {
                                 .authenticated()
                 )
 
+                .addFilterBefore(
+                        rateLimitingFilter,
+                        JwtAuthenticationFilter.class
+                )
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class

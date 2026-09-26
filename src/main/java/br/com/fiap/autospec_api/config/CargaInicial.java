@@ -7,14 +7,16 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import br.com.fiap.autospec_api.security.CryptoService;
 
 @Configuration
 public class CargaInicial {
 
     @Bean
-    CommandLineRunner criarUsuarios(
+        CommandLineRunner criarUsuarios(
             UsuarioRepository repository,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            CryptoService cryptoService) {
 
         return args -> {
 
@@ -23,10 +25,10 @@ public class CargaInicial {
 
                 Usuario admin = new Usuario();
 
-                admin.setNome("Administrador");
+                admin.setNome(cryptoService.encrypt("Administrador"));
                 admin.setEmail("admin@autospec.com");
                 admin.setSenha(
-                        passwordEncoder.encode("Admin123")
+                    passwordEncoder.encode("Admin123")
                 );
                 admin.setPerfil(Perfil.ADMIN);
 
@@ -38,12 +40,12 @@ public class CargaInicial {
 
                 Usuario analista = new Usuario();
 
-                analista.setNome("Analista");
+                analista.setNome(cryptoService.encrypt("Analista"));
                 analista.setEmail(
-                        "analista@autospec.com"
+                    "analista@autospec.com"
                 );
                 analista.setSenha(
-                        passwordEncoder.encode("Analista123")
+                    passwordEncoder.encode("Analista123")
                 );
                 analista.setPerfil(Perfil.ANALISTA);
 
