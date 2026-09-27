@@ -42,7 +42,7 @@ jobs:
             --metrics=off
 
       - name: SCA with Snyk
-        if: ${{ secrets.SNYK_TOKEN != '' }}
+        if: ${{ github.actor != 'dependabot[bot]' && secrets.SNYK_TOKEN != '' }}
         uses: snyk/actions/maven@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
